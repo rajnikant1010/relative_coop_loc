@@ -10,4 +10,4 @@ In the ***src*** folder, the different nodes are defined. From their names, thes
 ***5. error_node_multiple_cls.py*** --> This node takes in the true states and estimated states and computes the errors.  
   
     
-    ![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+![GitHub Logo](BlockDiagramCRLNew.PNG)

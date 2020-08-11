@@ -1,0 +1,14 @@
+<launch>
+
+    <arg name="record_bag_gazebo" default="true"/>
+    <arg name="bag_name" default="Gazebo_Apr25_20"/>
+
+    <!--<include file="$(find /home/riscdelta/Dropbox/risc_ws/src/basic_turtle)/launch/launch_simbots.launch" /> -->
+
+    <node pkg="crl_multiple" type="trajectory_botNew.py" name="trajectory_gen"  output="screen" clear_params="true">
+        
+    </node>
+
+    <node if="$(arg record_bag_gazebo)" name="record" pkg="rosbag" type="record" args=" -o /home/riscdelta/Desktop/$(arg bag_name) /robot0/mobile_base/commands/velocity /robot1/mobile_base/commands/velocity /robot2/mobile_base/commands/velocity /robot0/odom_truth /robot1/odom_truth /robot2/odom_truth /robot0/mobile_base/sensors/imu_data /robot1/mobile_base/sensors/imu_data /robot2/mobile_base/sensors/imu_data"/>
+
+</launch>

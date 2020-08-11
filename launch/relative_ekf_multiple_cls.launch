@@ -1,0 +1,78 @@
+<launch>
+
+    <arg name="record_bag_relpose" default="false"/>
+    <arg name="record_bag_range" default="true"/>
+    <arg name="bag_name" default="Traj2"/>
+    <arg name="play_bag" default="true"/>
+    <arg name="run_ekf_relative_pose" default="false"/>
+    <arg name="run_ekf_relative_range" default="true"/>
+    <arg name="run_range" default="true"/>
+    <arg name="error" default="true"/>
+
+
+    <!-- gazebo_bag1_27jun.bag -->
+
+    <group if="$(arg play_bag)">
+        <arg name="bag_path" default="/home/riscdelta/Dropbox/risc_ws/src/crl_multiple/bagfiles/Gazebo_Apr26_20Traj2.bag"/>
+        <node pkg="rosbag" type="play" name="player" output="screen" args=" --pause $(arg bag_path)"/>
+    </group>
+
+
+    <node pkg="crl_multiple" type="inertial_pose_multiple_cls.py" name="inert_pose"  output="screen" clear_params="true">
+    </node>
+
+    <node pkg="crl_multiple" type="true_relative_pose_multiple_cls.py" name="true_relative_pair"  output="screen" clear_params="true">
+    </node>
+
+    <node if="$(arg run_range)" pkg="crl_multiple" type="sensor_meas_multiple_cls.py" name="range_ms"  output="screen" clear_params="true">
+        <rosparam>
+            sigma_rho: 0.1
+        </rosparam>
+    </node>
+
+<!--    <rosparam file="$(find crl_multiple)/param/basic.yaml" />-->
+
+    <node if="$(arg run_ekf_relative_pose)" pkg="crl_multiple" type="relative_ekf_multiple_cls.py" name="relative_ekf" output="screen">
+        <rosparam>
+            sigma_px: 0.1
+            sigma_py: 0.1
+            sigma_del_psi: 0.15
+            sigma_v: 0.005
+            sigma_w: 0.005
+            time_step: 1
+            num_iter: 1
+            robot0_vel: 0.05
+            robot1_vel: 0.1
+            robot2_vel: 0.05
+            beta1: 0.3
+            beta2: 0.3
+        </rosparam>
+    </node>
+
+    <node if="$(arg run_ekf_relative_range)" pkg="crl_multiple" type="relative_ekf_multiple_range_cls.py" name="relative_ekf_range" output="screen">
+        <rosparam>
+            sigma_px: 0.05
+            sigma_py: 0.1
+            sigma_del_psi: 0.05
+            sigma_v: 0.001
+            sigma_w: 0.001
+            time_step: 1
+            num_iter: 1
+            robot0_vel: 0.05
+            robot1_vel: 0.05
+            robot2_vel: 0.05
+            beta1: 1.0
+            beta2: 1.0
+            CRLFlag: 0
+        </rosparam>
+    </node>
+
+    <node if="$(arg error)" pkg="crl_multiple" type="error_node_multiple_cls.py" name="error"  output="screen" clear_params="true">
+    </node>
+
+    <node if="$(arg record_bag_relpose)" name="record" pkg="rosbag" type="record" args=" -o /home/riscdelta/Desktop/$(arg bag_name) ekf_bot/rel_true ekf_bot/rel_est /ekf_bot/inertial_pose0 /ekf_bot/inertial_pose1 /ekf_bot/errors "/>
+
+    <node if="$(arg record_bag_range)" name="record" pkg="rosbag" type="record" args=" -o /home/riscdelta/Desktop/$(arg bag_name) /ekf_bot/rel_true_multiple /ekf_bot/rel_est10 /ekf_bot/rel_est20 /ekf_bot/inertial_pose0 /ekf_bot/inertial_pose1 /ekf_bot/inertial_pose2 /ekf_bot/errors_rel10 /ekf_bot/errors_rel20 /ekf_bot/range_meas10 /ekf_bot/range_meas20 /ekf_bot/range_meas12"/>
+
+
+</launch>

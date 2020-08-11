@@ -1,9 +1,7 @@
 <launch>
 
     <arg name="record_bag_gazebo" default="true"/>
-    <arg name="bag_name" default="Gazebo_Apr25_20"/>
-
-    <!--<include file="$(find /home/riscdelta/Dropbox/risc_ws/src/basic_turtle)/launch/launch_simbots.launch" /> -->
+    <arg name="bag_name" default="Turtlebot"/>
 
     <node pkg="crl_multiple" type="trajectory_botNew.py" name="trajectory_gen"  output="screen" clear_params="true">
         

@@ -14,4 +14,4 @@ In the ***src*** folder, the different nodes are defined. From their names, thes
 
 
 
-The simulation and experimental videos are found at 
+The simulation and experimental videos are found on youtube at https://youtu.be/7bsMEdjevrA
